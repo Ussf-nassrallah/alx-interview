@@ -1,49 +1,42 @@
 #!/usr/bin/python3
 ''' 0. Log parsing: solution '''
 
-import sys
+
+from sys import stdin
+import re
 
 
-def helper(codes, size):
-    '''helper function'''
-    print("File size: {}".format(size))
-    sorted_codes = sorted(codes.items())
+def valid_format(line):
+    """checks if the line have a valid format"""
+    pattern = r'^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - '
+    r'\[([^\]]+)\] "GET \/projects\/260 HTTP\/1\.1" (\d{3}) (\d+)$'
+    match = re.match(pattern, line)
+    if match:
+        return True
+    return False
 
-    for key, value in sorted_codes:
-        if value is not 0:
-            print(f"{key}: {value}")
 
-
-if __name__ == "__main__":
-    codes = {
-        "200": 0,
-        "301": 0,
-        "400": 0,
-        "401": 0,
-        "403": 0,
-        "404": 0,
-        "405": 0,
-        "500": 0
-    }
-
-    size = 0
-    counter = 0
-
-    try:
-        for result in sys.stdin:
-            counter += 1
-            info = result.split()
-            try:
-                size += int(info[-1])
-            except:
-                pass
-            try:
-                codes[info[-2]] += 1
-            except:
-                pass
-            if counter % 10 is 0:
-                helper(codes, size)
-        helper(codes, size)
-    except KeyboardInterrupt:
-        helper(codes, size)
-        raise
+try:
+    my_dict = {}
+    total_size = 0
+    for i, line in enumerate(stdin, start=1):
+        line = line.strip()
+        if not valid_format(line):
+            continue
+        parts = line.split(" ")
+        total_size += int(parts[-1])
+        if parts[-2] not in my_dict:
+            my_dict[parts[-2]] = 1
+        else:
+            my_dict[parts[-2]] += 1
+        my_dict = dict(sorted(my_dict.items()))
+        if i % 10 == 0:
+            print("File size: {}".format(total_size))
+            for key, val in my_dict.items():
+                print("{}: {}".format(key, val))
+except Exception as err:
+    pass
+finally:
+    print("File size: {}".format(total_size))
+    for key, val in my_dict.items():
+        print("{}: {}".format(key, val))
