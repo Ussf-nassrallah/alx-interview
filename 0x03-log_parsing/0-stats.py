@@ -1,15 +1,14 @@
 #!/usr/bin/python3
 ''' 0. Log parsing: solution '''
-
 import sys
 
 
-def helper(codes, size):
-    '''helper function'''
-    print("File size: {}".format(size))
-    for key, value in sorted(codes.items()):
-        if value != 0:
-            print(f"{key}: {value}")
+def print_stats(status_codes, file_size):
+    '''Prints the stats function'''
+    print(f"File size: {file_size}")
+    for k, v in sorted(status_codes.items()):
+        if v != 0:
+            print("{}: {}".format(k, v))
 
 
 if __name__ == "__main__":
