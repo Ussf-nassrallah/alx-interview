@@ -2,19 +2,37 @@
 // fetch starwars API
 
 const request = require('request');
-const api_url = 'https://swapi-api.hbtn.io/api/films/';
 const movieId = process.argv[2];
+const API_URL = `https://swapi-api.alx-tools.com/api/films/${movieId}`;
 
-request(api_url + movieId, function (err, res, body) {
-  if (err) throw err;
-  const chars = JSON.parse(body).characters;
-  exactOrder(chars, 0);
-});
-const exactOrder = (chars, idx) => {
-  if (idx === chars.length) return;
-  request(chars[idx], function (err, res, body) {
-    if (err) throw err;
-    console.log(JSON.parse(body).name);
-    exactOrder(chars, idx + 1);
+const fetchChar = (url) => {
+  request(url, (err, res, body) => {
+    if (err) {
+      console.log('fetchChar error: ' + err);
+    } else if (res.statusCode !== 200) {
+      console.log(`error! status: ${res.statusCode}`);
+    } else {
+      const char = JSON.parse(body);
+      console.log(char.name);
+    }
   });
 };
+
+const fetchFilmChars = (url) => {
+  request(url, (error, res, body) => {
+    if (error) {
+      console.log(error);
+    } else if (res.statusCode !== 200) {
+      console.log(`error! status: ${res.statusCode}`);
+    } else {
+      const data = JSON.parse(body);
+      const chars = data.characters;
+
+      for (const charIdx in chars) {
+        fetchChar(chars[charIdx]);
+      }
+    }
+  });
+};
+
+fetchFilmChars(API_URL);
