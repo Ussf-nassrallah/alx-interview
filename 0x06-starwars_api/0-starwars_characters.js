@@ -2,8 +2,8 @@
 // fetch starwars API
 
 const request = require('request');
-const api_url = 'https://swapi-api.hbtn.io/api/films/'
-const movieId = process.argv[2]
+const api_url = 'https://swapi-api.hbtn.io/api/films/';
+const movieId = process.argv[2];
 
 request(api_url + movieId, function (err, res, body) {
   if (err) throw err;
